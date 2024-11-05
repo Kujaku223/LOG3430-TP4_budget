@@ -21,6 +21,6 @@ jobs:
 
             # Execute the bisect action if tests fail
             - name: Execute the bisect action
-            if: failure()
-            run: |
-              python myscript.py
+              if: failure()
+              run: |
+                  python myscript.py
