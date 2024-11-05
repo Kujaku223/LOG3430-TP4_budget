@@ -19,19 +19,8 @@ jobs:
             - name: Run tests
               run: python manage.py test
 
-            # Identify last known good and bad commits
-            - name: Set up Git Bisect Variables
-              id: bisect_vars
-              run: |
-                  # Utilise le dernier commit comme point de départ 'mauvais' (BAD_HASH)
-                  echo "BAD_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
-
-                  # Trouver le dernier commit ayant passé les tests
-                  GOOD_HASH=$(git log --grep='Tests passed' -1 --pretty=format:"%H")
-                  echo "GOOD_HASH=$GOOD_HASH" >> $GITHUB_ENV
-
-            # Exécuter l'action de bisect si les tests échouent
+            # Execute the bisect action if tests fail
             - name: Execute the bisect action
-              if: failure()
-              run: |
-                  python myscript.py ${{ env.BAD_HASH }} ${{ env.GOOD_HASH }}
+            if: failure()
+            run: |
+              python myscript.py
