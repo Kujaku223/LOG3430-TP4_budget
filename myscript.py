@@ -1,21 +1,17 @@
 import os
+import sys
 
 # Récupérer les variables d'environnement
 badhash = os.getenv('BAD_HASH')
 goodhash = os.getenv('GOOD_HASH')
 
-# Si BAD_HASH n'est pas défini, utiliser le commit actuel comme point de départ
-if not badhash:
-    badhash = os.popen("git rev-parse HEAD").read().strip()
-
-# Si GOOD_HASH n'est pas défini, chercher le dernier commit valide (qui a passé les tests)
-if not goodhash:
-    # Trouver le dernier commit qui a passé les tests
-    goodhash = os.popen("git log --grep='Tests passed' -1 --pretty=format:'%H'").read().strip()
-
-# Vérifier que les variables sont correctement définies (après initialisation)
+# Vérifier si les variables sont présentes
 if not badhash or not goodhash:
-    raise ValueError("Unable to determine both BAD_HASH and GOOD_HASH.")
+    raise ValueError(f"Unable to determine both BAD_HASH and GOOD_HASH. BAD_HASH={badhash}, GOOD_HASH={goodhash}")
+
+# Afficher les commits pour débogage
+print(f"Using BAD_HASH: {badhash}")
+print(f"Using GOOD_HASH: {goodhash}")
 
 # Exécuter les commandes
 os.system(f"git bisect start {badhash} {goodhash}")
