@@ -13,5 +13,5 @@ jobs:
                   python-version: "3.9"
             - name: Install packages
               run: pip install -r requirements.txt
-            - name: Run tests
+            - name: Bisect test
               run: python manage.py test
