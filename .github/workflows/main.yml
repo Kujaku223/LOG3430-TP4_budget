@@ -7,12 +7,15 @@ jobs:
             - uses: actions/checkout@v3
               with:
                   fetch-depth: 0
+
             - name: Setup Python
               uses: actions/setup-python@v4
               with:
                   python-version: "3.9"
+
             - name: Install packages
               run: pip install -r requirements.txt
+
             - name: Run tests
               run: python manage.py test
 
@@ -27,7 +30,8 @@ jobs:
                   GOOD_HASH=$(git log --grep='Tests passed' -1 --pretty=format:"%H")
                   echo "GOOD_HASH=$GOOD_HASH" >> $GITHUB_ENV
 
-            # Execute the bisect action if tests fail
+            # Exécuter l'action de bisect si les tests échouent
             - name: Execute the bisect action
               if: failure()
-              run: python myscript.py ${{ env.BAD_HASH }} ${{ env.GOOD_HASH }}
+              run: |
+                  python myscript.py ${{ env.BAD_HASH }} ${{ env.GOOD_HASH }}
