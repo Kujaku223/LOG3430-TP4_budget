@@ -15,7 +15,19 @@ jobs:
               run: pip install -r requirements.txt
             - name: Run tests
               run: python manage.py test
-            # Custom action if tests fail
+
+              # Identify last known good and bad commits
+            - name: Set up Git Bisect Variables
+              id: bisect_vars
+              run: |
+                  # Le commit actuel (dernier commit) pour le bisect 'bad'
+                  echo "BAD_HASH=$(git rev-parse HEAD)" >> $GITHUB_ENV
+
+                  # Trouver le dernier commit ayant passé les tests
+                  GOOD_HASH=$(git log --grep='Tests passed' -1 --pretty=format:"%H")
+                  echo "GOOD_HASH=$GOOD_HASH" >> $GITHUB_ENV
+
+            # Execute the bisect action if tests fail
             - name: Execute the bisect action
               if: failure()
-              run: python myscript.py
+              run: python myscript.py ${{ env.BAD_HASH }} ${{ env.GOOD_HASH }}
