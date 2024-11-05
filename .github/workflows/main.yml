@@ -21,27 +21,25 @@ jobs:
             - name: Run tests
               run: python manage.py test
 
-            # Set the environment variables for BAD_HASH and GOOD_HASH
-            - name: Set up Git Bisect Variables
-              id: bisect_vars
-              run: |
-                  # Trouver le dernier commit ayant passé les tests
-                  GOOD_HASH=$(git log --grep='Tests passed' -1 --pretty=format:"%H")
-                  echo "GOOD_HASH=$GOOD_HASH" >> $GITHUB_ENV
+            # # Set the environment variables for BAD_HASH and GOOD_HASH
+            # - name: Set up Git Bisect Variables
+            #   id: bisect_vars
+            #   run: |
+            #       # Trouver le dernier commit ayant passé les tests
+            #       GOOD_HASH=$(git log --grep='Tests passed' -1 --pretty=format:"%H")
+            #       echo "GOOD_HASH=$GOOD_HASH" >> $GITHUB_ENV
 
-                  # Utiliser le commit actuel comme BAD_HASH
-                  BAD_HASH=$(git rev-parse HEAD)
-                  echo "BAD_HASH=$BAD_HASH" >> $GITHUB_ENV
+            #       # Utiliser le commit actuel comme BAD_HASH
+            #       BAD_HASH=$(git rev-parse HEAD)
+            #       echo "BAD_HASH=$BAD_HASH" >> $GITHUB_ENV
 
-            # Debug: Print BAD_HASH and GOOD_HASH to ensure they are set
-            - name: Debug Print
-              run: |
-                  echo "BAD_HASH=$BAD_HASH"
-                  echo "GOOD_HASH=$GOOD_HASH"
+            # # Debug: Print BAD_HASH and GOOD_HASH to ensure they are set
+            # - name: Debug Print
+            #   run: |
+            #       echo "BAD_HASH=$BAD_HASH"
+            #       echo "GOOD_HASH=$GOOD_HASH"
 
             # Execute the bisect action if tests fail
             - name: Execute the bisect action
               if: failure()
-              run: |
-                  echo "Running git bisect with BAD_HASH=$BAD_HASH and GOOD_HASH=$GOOD_HASH"
-                  python myscript.py
+              run: python myscript.py
