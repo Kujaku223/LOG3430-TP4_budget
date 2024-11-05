@@ -13,5 +13,9 @@ jobs:
                   python-version: "3.9"
             - name: Install packages
               run: pip install -r requirements.txt
-            - name: Bisect test
+            - name: Run tests
               run: python manage.py test
+            # Custom action if tests fail
+            - name: Execute the bisect action
+              if: failure()
+              run: python myscript.py
